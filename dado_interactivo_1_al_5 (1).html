@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dado del 1 al 5</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    background: transparent; color: #20243a;
+  }
+  .game { display: grid; justify-items: center; gap: 18px; padding: 18px; }
+  .die {
+    width: 180px; height: 180px; display: grid; place-items: center;
+    border: 5px solid #20243a; border-radius: 28px;
+    background: linear-gradient(145deg, #fff 0%, #f0f2ff 100%);
+    box-shadow: 0 10px 0 #c7cbe0, 0 16px 28px #20243a24;
+    font-size: 100px; font-weight: 850; line-height: 1;
+    user-select: none;
+  }
+  button {
+    border: 0; border-radius: 999px; padding: 13px 28px;
+    background: #635bff; color: white; font-size: 18px; font-weight: 750;
+    cursor: pointer; box-shadow: 0 5px 0 #4038c9;
+  }
+  button:hover { filter: brightness(1.06); }
+  button:active { transform: translateY(3px); box-shadow: 0 2px 0 #4038c9; }
+  button:focus-visible { outline: 3px solid #20243a; outline-offset: 4px; }
+  .hint { margin: 0; font-size: 14px; opacity: .75; }
+  @media (max-width: 300px) { .die { width: 140px; height: 140px; font-size: 78px; } }
+</style>
+</head>
+<body>
+  <main class="game">
+    <div class="die" id="die" role="img" aria-label="Número 1">1</div>
+    <button id="roll" type="button">🎲 Lanzar dado</button>
+    <p class="hint" aria-live="polite" id="message">Pulsa el botón para lanzar.</p>
+  </main>
+<script>
+  const die = document.getElementById('die');
+  const button = document.getElementById('roll');
+  const message = document.getElementById('message');
+  let rolling = false;
+  button.addEventListener('click', () => {
+    if (rolling) return;
+    rolling = true;
+    button.disabled = true;
+    button.textContent = 'Lanzando…';
+    let ticks = 0;
+    const animation = setInterval(() => {
+      die.textContent = String(Math.floor(Math.random() * 5) + 1);
+      ticks++;
+      if (ticks >= 12) {
+        clearInterval(animation);
+        const result = Math.floor(Math.random() * 5) + 1;
+        die.textContent = String(result);
+        die.setAttribute('aria-label', 'Número ' + result);
+        message.textContent = '¡Ha salido el ' + result + '!';
+        button.disabled = false;
+        button.textContent = '🎲 Lanzar otra vez';
+        rolling = false;
+      }
+    }, 75);
+  });
+</script>
+</body>
+</html>
